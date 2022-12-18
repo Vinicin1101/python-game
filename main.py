@@ -4,10 +4,10 @@ import math
 # Variaveis Globais
 GAME_TITLE = "não sei"
 FPS = 60
-# screen size
+
+# Tamanho da tela
 SCREEN_WIDTH = 800
 SCREEN_HEIGTH = 600
-
 
 
 # pygame window
