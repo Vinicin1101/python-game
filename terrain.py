@@ -4,12 +4,13 @@ import terrain
 
 
 class Terreno:
-    def __init__(self, width, heigth):
+    def __init__(self, width, heigth, padding=1):
         self.WIDTH = width
         self.HEIGTH = heigth
+        self.padding = padding
 
         self.drunk = {
-            'len': self.WIDTH,  # comprimento to terreno
+            'len': self.WIDTH/self.padding,  # comprimento to terreno
             # Margem de segurança (em relação a borda superior e inferior do plano)
             'padding': 10,
             'x': 0,
@@ -25,7 +26,7 @@ class Terreno:
         self.drunk = {
             'len': self.WIDTH,  # comprimento to terreno
             # Margem de segurança (em relação a borda superior e inferior do plano)
-            'padding': 10,
+            'padding': self.HEIGTH*0.25,
             'x': 0,
             'y': random.randint(0, self.HEIGTH)  # inicio da altitudo
         }
@@ -45,19 +46,21 @@ class Terreno:
             if self.map[y][x] == '0':
                 self.map[y][x] = '1'
                 self.drunk['len'] -= 1
-                self.drunk['x'] += 1
+                # afasta os pontos no eixo X
+                self.drunk['x'] += 1 * self.padding
 
             roll = random.randint(1, 4)  # carga aleatória
 
             # Cria um relevo ou depressão
             if roll == 1 and y > self.drunk['padding']:
-                self.drunk['y'] -= 1
+                # esse padding mantem a proporção
+                self.drunk['y'] -= 1 * self.padding
             if roll == 2 and y < self.HEIGTH - 1 - self.drunk['padding']:
-                self.drunk['y'] += 1
+                self.drunk['y'] += 1 * self.padding
 
             # Cria uma "moeda"
             if roll == 4 and y > self.drunk['padding']:
-                self.drunk['y'] -= 1
+                self.drunk['y'] -= 1 * self.padding
                 coinY = y-(random.randint(0, int(y*0.7)))  # altura da moeda
 
                 # Verifica se a altura é muito proxima do terreno

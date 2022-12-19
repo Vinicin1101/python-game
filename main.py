@@ -23,4 +23,8 @@ while run:
         if e.type == pygame.QUIT:
             run = False
 
+            
+
+    clock.tick(FPS)
+
 pygame.quit()
