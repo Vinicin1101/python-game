@@ -1,55 +1,110 @@
 import numpy
 import random
-
-# Dimensões do plano
-WIDTH = 60
-HEIGTH = 20
-
-drunk = {
-    'map': WIDTH,  # comprimento to terreno
-    'padding': 5,  # Margem de segurança (em relação a borda do plano)
-    'x': 0,
-    'y': random.randint(0, HEIGTH),  # inicio da altitudo
-}
-
-# Função de criação de linhas (por algum mistério o comentario ta afastado da função, deve ser coisa do Prettier)
+import terrain
 
 
-def getLevelRow():
-    return [' '] * WIDTH
+class Terreno:
+    def __init__(self, width, heigth):
+        self.WIDTH = width
+        self.HEIGTH = heigth
 
+        self.drunk = {
+            'len': self.WIDTH,  # comprimento to terreno
+            # Margem de segurança (em relação a borda superior e inferior do plano)
+            'padding': 10,
+            'x': 0,
+            'y': random.randint(0, self.HEIGTH)  # inicio da altitudo
+        }
 
-# Definição da matriz
-level = [getLevelRow() for _ in range(HEIGTH)]
+        self.map = [[]]  # terreno vazio
 
-# Estrutura de geração procedural
-while drunk['map'] >= 0 and drunk['x'] < WIDTH:
-    x = drunk['x']
-    y = drunk['y']
+    def __getMapRow(self):
+        return (['0'] * self.WIDTH)
 
-    if level[y][x] == ' ':
-        level[y][x] = '.'
-        drunk['map'] -= 1
-        drunk['x'] += 1
+    def __resetDrunk(self):
+        self.drunk = {
+            'len': self.WIDTH,  # comprimento to terreno
+            # Margem de segurança (em relação a borda superior e inferior do plano)
+            'padding': 10,
+            'x': 0,
+            'y': random.randint(0, self.HEIGTH)  # inicio da altitudo
+        }
 
-    roll = random.randint(1, 4)  # carga aleatória
+    def gerarMap(self):
 
-    # Cria um relevo ou depressão
-    if roll == 1 and y > drunk['padding']:
-        drunk['y'] -= 1
-    if roll == 2 and y < HEIGTH - 1 - drunk['padding']:
-        drunk['y'] += 1
+        self.__resetDrunk()
 
-    # Cria uma "moeda"
-    if roll == 4 and y > drunk['padding']:
-        drunk['y'] -= 1
-        coinY = y-(random.randint(0, int(y*0.7)))  # altura da moeda
+        # Definição da matriz
+        self.map = [self.__getMapRow() for _ in range(self.HEIGTH)]
 
-        # Verifica se a altura é muito proxima do terreno
-        if coinY == y or (coinY + 1) == y or (coinY - 1) == y:
-            level[coinY][x] = '.'
-        else:
-            level[coinY][x] = '*'
+        # Estrutura de geração procedural
+        while self.drunk['len'] >= 0 and self.drunk['x'] < self.WIDTH and self.drunk['y'] < self.HEIGTH:
+            x = self.drunk['x']
+            y = self.drunk['y']
 
-for row in level:
-    print(''.join(row))
+            if self.map[y][x] == '0':
+                self.map[y][x] = '1'
+                self.drunk['len'] -= 1
+                self.drunk['x'] += 1
+
+            roll = random.randint(1, 4)  # carga aleatória
+
+            # Cria um relevo ou depressão
+            if roll == 1 and y > self.drunk['padding']:
+                self.drunk['y'] -= 1
+            if roll == 2 and y < self.HEIGTH - 1 - self.drunk['padding']:
+                self.drunk['y'] += 1
+
+            # Cria uma "moeda"
+            if roll == 4 and y > self.drunk['padding']:
+                self.drunk['y'] -= 1
+                coinY = y-(random.randint(0, int(y*0.7)))  # altura da moeda
+
+                # Verifica se a altura é muito proxima do terreno
+                if coinY == y or (coinY + 1) == y or (coinY - 1) == y:
+                    self.map[coinY][x] = '1'
+                else:
+                    self.map[coinY][x] = '2'
+
+        return (self.map)
+
+    def getMap(self):
+        copyMap = [x[:] for x in self.map]
+
+        return copyMap
+
+    def viewMap(self):
+        view = self.getMap()
+        for i, row in enumerate(view):
+            for j, cell in enumerate(row):
+                if cell == '0':
+                    view[i][j] = ' '
+                elif cell == '1':
+                    view[i][j] = '.'
+                elif cell == '2':
+                    view[i][j] = '*'
+
+        for row in view:
+            print(' '.join(row))
+
+    def getMapCoordinates(self):
+        copy = self.getMap()
+        coor = []
+
+        for i, row in enumerate(copy):
+            for j, cell in enumerate(row):
+                if cell == '1':
+                    coor.append((i, j))
+
+        return coor
+
+    def getCoinCoordinates(self):
+        copy = self.getMap()
+        coor = []
+
+        for i, row in enumerate(copy):
+            for j, cell in enumerate(row):
+                if cell == '2':
+                    coor.append((i, j))
+
+        return coor
