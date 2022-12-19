@@ -18,29 +18,38 @@ pygame.display.set_icon(pygame.image.load('icon.png'))
 clock = pygame.time.Clock()
 
 # Terreno
-terreno = terrain.Terreno(50, 40)
+terreno = terrain.Terreno(80, 60)
 terreno.gerarMap()
 mapPoints = terreno.getMapCoordinates()
 
 run = True
 while run:
 
+    # Taxa de update
     clock.tick(FPS)
 
     # close event
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
             run = False
+
+        # Left Mouse Click
         elif e.type == pygame.MOUSEBUTTONDOWN and e.button == 1:
             terreno.gerarMap()
             mapPoints = terreno.getMapCoordinates()
-            print("Left Click")
 
     window.fill(pygame.Color("black"))
 
-    for p in mapPoints:
-        pygame.draw.circle(window, pygame.Color(
-            "white"), (p[0]*10, p[1]*10), 3)
+    for i in range(0, (len(mapPoints)-1)):
+        # Virando o plano (y, x) -> (x, y)
+        p1 = mapPoints[i]
+        p1 = p1[1], p1[0]
+        p2 = mapPoints[i+1]
+        p2 = p1[1], p1[0]
+
+        # Liga dois pontos
+        pygame.draw.line(window, pygame.Color(
+            "white"), (p1[0]*10, p1[1]*10), (p2[1]*10, p2[0]*10), 2)
 
     pygame.display.update()
 

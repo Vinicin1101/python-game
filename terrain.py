@@ -7,10 +7,9 @@ class Terreno:
     def __init__(self, width, heigth, padding=1):
         self.WIDTH = width
         self.HEIGTH = heigth
-        self.padding = padding
 
         self.drunk = {
-            'len': self.WIDTH/self.padding,  # comprimento to terreno
+            'len': self.WIDTH,  # comprimento to terreno
             # Margem de segurança (em relação a borda superior e inferior do plano)
             'padding': 10,
             'x': 0,
@@ -47,20 +46,20 @@ class Terreno:
                 self.map[y][x] = '1'
                 self.drunk['len'] -= 1
                 # afasta os pontos no eixo X
-                self.drunk['x'] += 1 * self.padding
+                self.drunk['x'] += 1
 
-            roll = random.randint(1, 4)  # carga aleatória
+            roll = random.randint(1, 3)  # carga aleatória
 
             # Cria um relevo ou depressão
             if roll == 1 and y > self.drunk['padding']:
                 # esse padding mantem a proporção
-                self.drunk['y'] -= 1 * self.padding
+                self.drunk['y'] -= 1
             if roll == 2 and y < self.HEIGTH - 1 - self.drunk['padding']:
-                self.drunk['y'] += 1 * self.padding
+                self.drunk['y'] += 1
 
             # Cria uma "moeda"
-            if roll == 4 and y > self.drunk['padding']:
-                self.drunk['y'] -= 1 * self.padding
+            if roll == 3 and y > self.drunk['padding']:
+                self.drunk['y'] -= 1
                 coinY = y-(random.randint(0, int(y*0.7)))  # altura da moeda
 
                 # Verifica se a altura é muito proxima do terreno
@@ -111,3 +110,26 @@ class Terreno:
                     coor.append((i, j))
 
         return coor
+
+    def getDem(self):
+        dem = {
+            "x": [],
+            "y": [],
+            "z": [],
+        }
+
+        coor = self.getMapCoordinates()
+        for p in coor:
+            print(p)
+            dem["x"].append(p[1])
+            dem["y"].append(p[0])
+
+        map = self.getMap()
+        for row in map:
+            subArray = []
+            for i in row:
+                subArray.append(i)
+
+            dem["z"].append(subArray)
+
+        return dem
