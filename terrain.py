@@ -48,7 +48,7 @@ class Terreno:
                 # afasta os pontos no eixo X
                 self.drunk['x'] += 1
 
-            roll = random.randint(1, 3)  # carga aleatória
+            roll = random.randint(1, 2)  # carga aleatória
 
             # Cria um relevo ou depressão
             if roll == 1 and y > self.drunk['padding']:

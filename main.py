@@ -18,7 +18,7 @@ pygame.display.set_icon(pygame.image.load('icon.png'))
 clock = pygame.time.Clock()
 
 # Terreno
-terreno = terrain.Terreno(80, 60)
+terreno = terrain.Terreno(int(SCREEN_WIDTH/7), 60)
 terreno.gerarMap()
 mapPoints = terreno.getMapCoordinates()
 
@@ -49,7 +49,7 @@ while run:
 
         # Liga dois pontos
         pygame.draw.line(window, pygame.Color(
-            "white"), (p1[0]*10, p1[1]*10), (p2[1]*10, p2[0]*10), 2)
+            "white"), (p1[0]*7, p1[1]*10), (p2[1]*7, p2[0]*10), 2)
 
     pygame.display.update()
 
