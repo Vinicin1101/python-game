@@ -31,7 +31,7 @@ pygame.font.init()
 roboto = pygame.font.Font("font\Roboto-Light.ttf", 12)
 
 # Terreno (sem fisica)
-terreno = terrain.Terreno(int(SCREEN_WIDTH/1), 60)
+terreno = terrain.Terreno(int(SCREEN_WIDTH/1), 20)
 terreno.gerarMap()
 mapPoints = terreno.getMapCoordinates()
 
@@ -58,7 +58,7 @@ for i in range(0, (len(mapPoints)-1)):
 
     ground_body = pymunk.Body(body_type=pymunk.Body.STATIC)
     ground_shape = pymunk.Segment(
-        ground_body, ((p1[0]*50, p1[1]*5)), (p2[1]*50, p2[0]*5), 1.0)
+        ground_body, ((p1[0]*50, p1[1]*25)), (p2[1]*50, p2[0]*25), 1.0)
     ground_shape.color = (pygame.Color("white"))
     space.add(ground_body, ground_shape)
 
