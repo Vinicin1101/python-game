@@ -64,8 +64,10 @@ for i in range(0, (len(mapPoints)-1)):
 
 # Foguetinho
 rocket = rocket.Rocket((400, 100))
-
 space.add(rocket.body, rocket.shape)
+
+# Carrega o sprite do foguete
+foguete_sprite = pygame.image.load("sprites/foguete/foguete.png")
 
 
 def velocityHUD():
@@ -122,8 +124,17 @@ while run:
         rocket.change_direction(1)
         rocket.impulse()
 
-    # Desenha o pymunk
-    space.debug_draw(draw_options)
+    # Desenha o terreno
+    for i in range(0, (len(mapPoints)-1)):
+        # Virando o plano (y, x) -> (x, y)
+        p1 = mapPoints[i]
+        p1 = p1[1], p1[0]
+
+        pygame.draw.circle(screen, pygame.Color(
+            "white"), (p1[0]*50, p1[1]*25), 1)
+
+    # Desenha o sprite do foguete na tela
+    screen.blit(foguete_sprite, rocket.body.position)
 
     # Update
     dt = 1.0 / FPS
