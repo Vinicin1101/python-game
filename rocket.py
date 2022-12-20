@@ -19,7 +19,7 @@ class Rocket:
         # Create body and shape for the rocket
         self.body = pymunk.Body(self.mass, self.moment)
         self.body.position = position
-        vertices = [(-10, 10), (10, 10), (10, -25), (-10, -25), (0, -40)]
+        vertices = [(-5, 5), (5, 5), (5, -10), (-5, -10), (0, -20)]
         self.shape = pymunk.Poly(self.body, vertices)
         self.shape.color = (pygame.Color("white"))
 
@@ -72,3 +72,14 @@ class Rocket:
             self.body.apply_impulse_at_local_point(impulse_force, local_point)
 
         self.angle = math.radians(self.angle)
+
+    def getVelocity(self):
+        velocidade = self.body.velocity * -3.6
+        velocidade = self.__formatar_kmh(velocidade)
+        return velocidade
+
+    def __formatar_kmh(self, vetor_kmh):
+        velocidade_x = vetor_kmh.x
+        velocidade_y = vetor_kmh.y
+        velocidade_media = (velocidade_x + velocidade_y) / 2
+        return round(velocidade_media)
