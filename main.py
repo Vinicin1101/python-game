@@ -44,9 +44,6 @@ space = pymunk.Space()
 space.gravity = (0, 100)
 
 # Terreno
-terreno = terrain.Terreno(int(SCREEN_WIDTH/1), 500)
-terreno.gerarMap()
-mapPoints = terreno.getMapCoordinates()
 
 # Chão (físico, porém reto)
 # ground_body = pymunk.Body(body_type=pymunk.Body.STATIC)
@@ -56,6 +53,11 @@ mapPoints = terreno.getMapCoordinates()
 # space.add(ground_body, ground_shape)
 
 # Desenha os pontos do terreno
+seed = "The Blue Pen"
+terreno = terrain.Terreno(SCREEN_WIDTH, SCREEN_HEIGTH, seed=seed)
+terreno.gerarMap()
+mapPoints = terreno.getMapCoordinates()
+
 for i in range(0, (len(mapPoints)-1)):
     # Virando o plano (y, x) -> (x, y)
     p1 = mapPoints[i]
@@ -92,25 +94,7 @@ foguete_indice_sprite = 0
 spritePosition = (0, 0)
 
 
-def velocityHUD():
-    msg = 'Velocidade: ' + str(rocket.getVelocity()) + 'Km/h'
-    return msg
-
-
-def angleHUD():
-    msg = 'Angulo: ' + str(rocket.getAngle() * -1) + '°'
-    return msg
-
-
-# Moedinha
-
-# Cria um objeto Pyganim a partir do gif animado
-animation = pyganim.PygAnimation([("sprites/moeda/moeda.gif", 200)])
-
-# Define a posição inicial da moeda
-coin_x = 100
-coin_y = 100
-
+# Renderização
 run = True
 while run:
 
@@ -119,11 +103,14 @@ while run:
     screen.fill(pygame.Color(30, 30, 30))
 
     # HUD
-    screen.blit(roboto.render(velocityHUD(), True,
+    screen.blit(roboto.render(rocket.velocityHUD(), True,
                 pygame.Color("white")), (20, 580))
 
-    screen.blit(roboto.render(angleHUD(), True,
+    screen.blit(roboto.render(rocket.angleHUD(), True,
                               pygame.Color("white")), (20, 560))
+
+    screen.blit(roboto.render(rocket.positionHUD(), True,
+                              pygame.Color("white")), (20, 540))
 
     # close event
     for e in pygame.event.get():
@@ -147,6 +134,7 @@ while run:
     if keys[pygame.K_LEFT]:
         rocket.angle -= 5
         rocket.change_direction(0)
+
     elif keys[pygame.K_RIGHT]:
         rocket.angle += 5
         rocket.change_direction(1)
@@ -189,8 +177,8 @@ while run:
     foguete_sp = pygame.transform.rotozoom(foguete_sp, 0, 1)
 
     # Desenha o sprite
+    spritePosition = pymunk.pygame_util.to_pygame(spritePosition, screen)
     screen.blit(foguete_sp, spritePosition)
-    animation.blit(screen, (100, 100))
 
     # Contador de tempo
     update_time += clock.get_time()

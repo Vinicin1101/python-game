@@ -87,3 +87,22 @@ class Rocket:
     def getAngle(self):
         angle = math.fmod(math.degrees(self.body.angle), 360) * -1
         return round(angle)
+
+    def velocityHUD(self):
+        msg = 'Velocidade: ' + str(self.getVelocity()) + 'Km/h'
+        return msg
+
+    def angleHUD(self):
+        msg = 'Angulo: ' + str(self.getAngle() * -1) + '°'
+        return msg
+
+    def getCordenadas(self):
+        return self.body.position
+
+    def positionHUD(self):
+        vec = self.getCordenadas()
+        pX = round(vec[0])
+        pY = round(vec[1])
+
+        msg = 'Localização: ' + str(pX) + ', ' + str(pY)
+        return msg

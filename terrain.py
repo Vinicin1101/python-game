@@ -4,9 +4,12 @@ import terrain
 
 
 class Terreno:
-    def __init__(self, width, heigth, padding=1):
+    def __init__(self, width, heigth, seed=0):
         self.WIDTH = width
         self.HEIGTH = heigth
+        self.seed = seed
+
+        random.seed(self.seed)
 
         self.drunk = {
             'len': self.WIDTH,  # comprimento to terreno
@@ -54,7 +57,6 @@ class Terreno:
 
             # Cria um relevo ou depressão
             if roll == 1 and y > self.drunk['paddingTOP']:
-                # esse padding mantem a proporção
                 self.drunk['y'] -= 1
             if roll == 2 and y < self.HEIGTH - 1 - self.drunk['paddingBOT']:
                 self.drunk['y'] += 1
