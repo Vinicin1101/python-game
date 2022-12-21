@@ -5,6 +5,7 @@ from pymunk.vec2d import Vec2d
 import pymunk.pygame_util
 
 import sys
+import time
 import math
 
 import rocket
@@ -14,6 +15,7 @@ import terrain
 # Variaveis Globais
 GAME_TITLE = "não sei"
 FPS = 60
+spriteFPS = 10
 
 # Tamanho da tela
 SCREEN_WIDTH = 800
@@ -66,12 +68,30 @@ for i in range(0, (len(mapPoints)-1)):
 rocket = rocket.Rocket((400, 100))
 space.add(rocket.body, rocket.shape)
 
-# Carrega o sprite do foguete
-foguete_sprite = pygame.image.load("sprites/foguete/foguete.png")
+# Carrega os sprites do foguete
+foguete_sprites = [
+    pygame.image.load("sprites/foguete/foguete_1.png"),
+    pygame.image.load("sprites/foguete/foguete_2.png"),
+    pygame.image.load("sprites/foguete/foguete_3.png")
+]
+
+# Corrigindo a posição do sprite
+imagem = foguete_sprites[0]
+largura, altura = imagem.get_size()
+
+spritePosition = (0, 0)
+
+# Índice atual do sprite do foguete
+foguete_indice_sprite = 0
 
 
 def velocityHUD():
     msg = 'Velocidade: ' + str(rocket.getVelocity()) + 'Km/h'
+    return msg
+
+
+def angleHUD():
+    msg = 'Angulo: ' + str(rocket.getAngle() * -1) + '°'
     return msg
 
 
@@ -82,9 +102,15 @@ while run:
     clock.tick(FPS)
     screen.fill(pygame.Color("black"))
 
+    # Taxa de atualização dos sprites
+    sprite_index = (int(time.time() * spriteFPS) + 1) % len(foguete_sprites)
+
     # HUD
     screen.blit(roboto.render(velocityHUD(), True,
                 pygame.Color("white")), (20, 580))
+
+    screen.blit(roboto.render(angleHUD(), True,
+                              pygame.Color("white")), (20, 560))
 
     # close event
     for e in pygame.event.get():
@@ -100,6 +126,9 @@ while run:
             if e.key == pygame.K_SPACE:
                 rocket.resetPropultion()
 
+                sprite_index = (int(time.time() * spriteFPS) +
+                                1) % len(foguete_sprites)
+
     keys = pygame.key.get_pressed()  # Ouve a tecla pressionada
 
     # Movimentação
@@ -114,15 +143,34 @@ while run:
     elif keys[pygame.K_SPACE]:
         rocket.impulse()
 
+        for i in range(foguete_indice_sprite):
+            if i == 0:
+                sprite_index = (int(time.time() * spriteFPS) +
+                                1) % len(foguete_sprites)
+            foguete_indice_sprite += 1
+
     # Teclas simultâneas
     elif keys[pygame.K_LEFT] and keys[pygame.K_SPACE]:
         rocket.angle -= 5
         rocket.change_direction(0)
         rocket.impulse()
+
+        for i in range(foguete_indice_sprite):
+            if i == 0:
+                sprite_index = (int(time.time() * spriteFPS) +
+                                1) % len(foguete_sprites)
+            foguete_indice_sprite += 1
+
     elif keys[pygame.K_RIGHT] and keys[pygame.K_SPACE]:
         rocket.angle += 5
         rocket.change_direction(1)
         rocket.impulse()
+
+        for i in range(foguete_indice_sprite):
+            if i == 0:
+                sprite_index = (int(time.time() * spriteFPS) +
+                                1) % len(foguete_sprites)
+            foguete_indice_sprite += 1
 
     # Desenha o terreno
     for i in range(0, (len(mapPoints)-1)):
@@ -134,7 +182,21 @@ while run:
             "white"), (p1[0]*50, p1[1]*25), 1)
 
     # Desenha o sprite do foguete na tela
-    screen.blit(foguete_sprite, rocket.body.position)
+    spritePosition = \
+        (rocket.body.position[0] - largura/2), \
+        (rocket.body.position[1] - altura + 15)
+
+    # Rotacione a imagem do sprite com base no ângulo do objeto Pymunk
+    angle = rocket.getAngle()
+
+    foguete_sp = pygame.transform.rotate(
+        foguete_sprites[foguete_indice_sprite], angle)
+
+    foguete_sp = pygame.transform.rotozoom(foguete_sp, 0, 1)
+    screen.blit(foguete_sp, spritePosition)
+
+    # Debug PyMunk
+    # space.debug_draw(draw_options)
 
     # Update
     dt = 1.0 / FPS

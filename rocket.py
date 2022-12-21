@@ -83,3 +83,7 @@ class Rocket:
         velocidade_y = vetor_kmh.y
         velocidade_media = (velocidade_x + velocidade_y) / 2
         return round(velocidade_media)
+
+    def getAngle(self):
+        angle = math.fmod(math.degrees(self.body.angle), 360) * -1
+        return round(angle)
